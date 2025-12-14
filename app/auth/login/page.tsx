@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,6 +10,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
+import { useI18n } from "@/lib/i18n/context"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -20,6 +20,7 @@ export default function LoginPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirect = searchParams.get("redirect") || "/"
+  const { t } = useI18n()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -36,7 +37,7 @@ export default function LoginPage() {
       router.push(redirect)
       router.refresh()
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "登录失败，请重试")
+      setError(error instanceof Error ? error.message : t.auth.login.error)
     } finally {
       setIsLoading(false)
     }
@@ -52,15 +53,15 @@ export default function LoginPage() {
 
           <Card className="w-full border-[#c9a86c]/20">
             <CardHeader className="text-center">
-              <CardTitle className="text-2xl text-[#8b7355]">登录账户</CardTitle>
-              <CardDescription className="text-[#666]">输入您的邮箱和密码登录</CardDescription>
+              <CardTitle className="text-2xl text-[#8b7355]">{t.auth.login.title}</CardTitle>
+              <CardDescription className="text-[#666]">{t.auth.login.description}</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleLogin}>
                 <div className="flex flex-col gap-4">
                   <div className="grid gap-2">
                     <Label htmlFor="email" className="text-[#8b7355]">
-                      邮箱
+                      {t.auth.login.email}
                     </Label>
                     <Input
                       id="email"
@@ -74,7 +75,7 @@ export default function LoginPage() {
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor="password" className="text-[#8b7355]">
-                      密码
+                      {t.auth.login.password}
                     </Label>
                     <Input
                       id="password"
@@ -91,13 +92,13 @@ export default function LoginPage() {
                     className="w-full bg-[#c9a86c] hover:bg-[#b89555] text-white"
                     disabled={isLoading}
                   >
-                    {isLoading ? "登录中..." : "登录"}
+                    {isLoading ? t.auth.login.loading : t.auth.login.submit}
                   </Button>
                 </div>
                 <div className="mt-4 text-center text-sm text-[#666]">
-                  还没有账户？{" "}
+                  {t.auth.login.noAccount}{" "}
                   <Link href="/auth/sign-up" className="text-[#c9a86c] hover:underline">
-                    立即注册
+                    {t.auth.login.register}
                   </Link>
                 </div>
               </form>

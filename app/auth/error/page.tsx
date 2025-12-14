@@ -1,15 +1,17 @@
+"use client"
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Image from "next/image"
 import { AlertCircle } from "lucide-react"
+import { useI18n } from "@/lib/i18n/context"
+import { useSearchParams } from "next/navigation"
 
-export default async function AuthErrorPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error: string }>
-}) {
-  const params = await searchParams
+export default function AuthErrorPage() {
+  const { t } = useI18n()
+  const searchParams = useSearchParams()
+  const error = searchParams.get("error")
 
   return (
     <div className="min-h-screen bg-[#faf9f7] flex items-center justify-center p-6">
@@ -24,16 +26,19 @@ export default async function AuthErrorPage({
               <div className="mx-auto w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mb-4">
                 <AlertCircle className="w-8 h-8 text-red-500" />
               </div>
-              <CardTitle className="text-2xl text-[#8b7355]">出错了</CardTitle>
+              <CardTitle className="text-2xl text-[#8b7355]">{t.auth.error.title}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {params?.error ? (
-                <p className="text-sm text-[#666]">错误信息：{params.error}</p>
+              {error ? (
+                <p className="text-sm text-[#666]">
+                  {t.auth.error.errorMessage}
+                  {error}
+                </p>
               ) : (
-                <p className="text-sm text-[#666]">发生了未知错误，请重试。</p>
+                <p className="text-sm text-[#666]">{t.auth.error.unknownError}</p>
               )}
               <Button asChild className="w-full bg-[#c9a86c] hover:bg-[#b89555]">
-                <Link href="/auth/login">返回登录</Link>
+                <Link href="/auth/login">{t.auth.error.backToLogin}</Link>
               </Button>
             </CardContent>
           </Card>

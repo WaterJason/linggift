@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Palette, MapPin, ImageIcon, ArrowLeft } from "lucide-react"
 import type { ColorMethod } from "../customization-flow"
 import type { JewelryItem } from "@/lib/jewelry-data"
+import { useI18n } from "@/lib/i18n/context"
 
 interface ColorMethodStepProps {
   jewelry: JewelryItem
@@ -12,31 +13,33 @@ interface ColorMethodStepProps {
   onBack: () => void
 }
 
-const methods = [
-  {
-    id: "direct" as const,
-    icon: Palette,
-    title: "直接选择配色",
-    description: "从预设配色方案中选择您喜欢的颜色，AI立即生成效果图",
-    color: "bg-gradient-to-br from-[#c9a96e]/20 to-[#c9a96e]/5",
-  },
-  {
-    id: "scene" as const,
-    icon: MapPin,
-    title: "场景推荐配色",
-    description: "告诉AI您的使用场景，如婚礼、商务、日常等，获得专属配色建议",
-    color: "bg-gradient-to-br from-[#7bb896]/20 to-[#7bb896]/5",
-  },
-  {
-    id: "image" as const,
-    icon: ImageIcon,
-    title: "图片智能配色",
-    description: "上传服装或人物照片，AI分析色彩为您推荐最搭配的珐琅配色",
-    color: "bg-gradient-to-br from-[#a87cc9]/20 to-[#a87cc9]/5",
-  },
-]
-
 export function ColorMethodStep({ jewelry, onSelectMethod, onBack }: ColorMethodStepProps) {
+  const { t } = useI18n()
+
+  const methods = [
+    {
+      id: "direct" as const,
+      icon: Palette,
+      title: t.customization.colorMethodStep.methods.direct.title,
+      description: t.customization.colorMethodStep.methods.direct.description,
+      color: "bg-gradient-to-br from-[#c9a96e]/20 to-[#c9a96e]/5",
+    },
+    {
+      id: "scene" as const,
+      icon: MapPin,
+      title: t.customization.colorMethodStep.methods.scene.title,
+      description: t.customization.colorMethodStep.methods.scene.description,
+      color: "bg-gradient-to-br from-[#7bb896]/20 to-[#7bb896]/5",
+    },
+    {
+      id: "image" as const,
+      icon: ImageIcon,
+      title: t.customization.colorMethodStep.methods.image.title,
+      description: t.customization.colorMethodStep.methods.image.description,
+      color: "bg-gradient-to-br from-[#a87cc9]/20 to-[#a87cc9]/5",
+    },
+  ]
+
   return (
     <div className="bg-white rounded-2xl shadow-sm p-6 lg:p-8">
       {/* Selected Jewelry Preview */}
@@ -52,8 +55,8 @@ export function ColorMethodStep({ jewelry, onSelectMethod, onBack }: ColorMethod
         </div>
       </div>
 
-      <h3 className="font-serif text-xl font-medium text-[#3a3028] mb-2">选择配色定制方式</h3>
-      <p className="text-sm text-[#8a7a6a] mb-8">三种方式帮您找到专属配色，款式保持不变，只改变珐琅釉色</p>
+      <h3 className="font-serif text-xl font-medium text-[#3a3028] mb-2">{t.customization.colorMethodStep.title}</h3>
+      <p className="text-sm text-[#8a7a6a] mb-8">{t.customization.colorMethodStep.subtitle}</p>
 
       <div className="space-y-4 mb-8">
         {methods.map((method) => (
@@ -82,7 +85,7 @@ export function ColorMethodStep({ jewelry, onSelectMethod, onBack }: ColorMethod
         className="w-full border-[#c9a96e] text-[#c9a96e] hover:bg-[#c9a96e]/5 h-12 bg-transparent"
       >
         <ArrowLeft className="w-4 h-4 mr-2" />
-        返回上一步
+        {t.customization.colorMethodStep.back}
       </Button>
     </div>
   )

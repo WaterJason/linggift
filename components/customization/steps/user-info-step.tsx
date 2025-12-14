@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import type { UserInfo } from "../customization-flow"
 import type { JewelryItem } from "@/lib/jewelry-data"
+import { useI18n } from "@/lib/i18n/context"
 
 interface UserInfoStepProps {
   jewelry: JewelryItem
@@ -15,32 +16,34 @@ interface UserInfoStepProps {
   onNext: () => void
 }
 
-const identities = [
-  { value: "professional", label: "职业女性" },
-  { value: "student", label: "学生" },
-  { value: "bride", label: "新娘" },
-  { value: "elder", label: "长辈" },
-  { value: "artist", label: "艺术工作者" },
-  { value: "other", label: "其他" },
-]
-
-const ageRanges = [
-  { value: "18-25", label: "18-25岁" },
-  { value: "26-35", label: "26-35岁" },
-  { value: "36-45", label: "36-45岁" },
-  { value: "46-55", label: "46-55岁" },
-  { value: "55+", label: "55岁以上" },
-]
-
-const styles = [
-  { value: "elegant", label: "优雅端庄" },
-  { value: "modern", label: "时尚现代" },
-  { value: "classic", label: "经典传统" },
-  { value: "artistic", label: "艺术个性" },
-  { value: "simple", label: "简约低调" },
-]
-
 export function UserInfoStep({ jewelry, userInfo, onUserInfoChange, onNext }: UserInfoStepProps) {
+  const { t } = useI18n()
+
+  const identities = [
+    { value: "professional", label: t.customization.userInfoStep.identities.professional },
+    { value: "student", label: t.customization.userInfoStep.identities.student },
+    { value: "bride", label: t.customization.userInfoStep.identities.bride },
+    { value: "elder", label: t.customization.userInfoStep.identities.elder },
+    { value: "artist", label: t.customization.userInfoStep.identities.artist },
+    { value: "other", label: t.customization.userInfoStep.identities.other },
+  ]
+
+  const ageRanges = [
+    { value: "18-25", label: t.customization.userInfoStep.ages["18-25"] },
+    { value: "26-35", label: t.customization.userInfoStep.ages["26-35"] },
+    { value: "36-45", label: t.customization.userInfoStep.ages["36-45"] },
+    { value: "46-55", label: t.customization.userInfoStep.ages["46-55"] },
+    { value: "55+", label: t.customization.userInfoStep.ages["55+"] },
+  ]
+
+  const styles = [
+    { value: "elegant", label: t.customization.userInfoStep.styles.elegant },
+    { value: "modern", label: t.customization.userInfoStep.styles.modern },
+    { value: "classic", label: t.customization.userInfoStep.styles.classic },
+    { value: "artistic", label: t.customization.userInfoStep.styles.artistic },
+    { value: "simple", label: t.customization.userInfoStep.styles.simple },
+  ]
+
   const updateField = <K extends keyof UserInfo>(field: K, value: UserInfo[K]) => {
     onUserInfoChange({ ...userInfo, [field]: value })
   }
@@ -62,11 +65,13 @@ export function UserInfoStep({ jewelry, userInfo, onUserInfoChange, onNext }: Us
         </div>
       </div>
 
-      <h3 className="font-serif text-xl font-medium text-[#3a3028] mb-6">让AI了解您的需求</h3>
+      <h3 className="font-serif text-xl font-medium text-[#3a3028] mb-6">{t.customization.userInfoStep.title}</h3>
 
       {/* Purpose */}
       <div className="mb-8">
-        <Label className="text-sm font-medium text-[#3a3028] mb-3 block">这件作品是给谁用的？</Label>
+        <Label className="text-sm font-medium text-[#3a3028] mb-3 block">
+          {t.customization.userInfoStep.purposeQuestion}
+        </Label>
         <RadioGroup
           value={userInfo.purpose || ""}
           onValueChange={(value) => updateField("purpose", value as "self" | "gift")}
@@ -75,13 +80,13 @@ export function UserInfoStep({ jewelry, userInfo, onUserInfoChange, onNext }: Us
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="self" id="self" className="border-[#c9a96e] text-[#c9a96e]" />
             <Label htmlFor="self" className="text-[#6a5a4a] cursor-pointer">
-              自己使用
+              {t.customization.userInfoStep.purposeSelf}
             </Label>
           </div>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="gift" id="gift" className="border-[#c9a96e] text-[#c9a96e]" />
             <Label htmlFor="gift" className="text-[#6a5a4a] cursor-pointer">
-              赠送他人
+              {t.customization.userInfoStep.purposeGift}
             </Label>
           </div>
         </RadioGroup>
@@ -90,7 +95,9 @@ export function UserInfoStep({ jewelry, userInfo, onUserInfoChange, onNext }: Us
       {/* Identity */}
       <div className="mb-8">
         <Label className="text-sm font-medium text-[#3a3028] mb-3 block">
-          {userInfo.purpose === "gift" ? "收礼人的身份" : "您的身份"}
+          {userInfo.purpose === "gift"
+            ? t.customization.userInfoStep.identityGiftLabel
+            : t.customization.userInfoStep.identityLabel}
         </Label>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {identities.map((identity) => (
@@ -111,7 +118,7 @@ export function UserInfoStep({ jewelry, userInfo, onUserInfoChange, onNext }: Us
 
       {/* Age Range */}
       <div className="mb-8">
-        <Label className="text-sm font-medium text-[#3a3028] mb-3 block">年龄段</Label>
+        <Label className="text-sm font-medium text-[#3a3028] mb-3 block">{t.customization.userInfoStep.ageLabel}</Label>
         <div className="flex flex-wrap gap-3">
           {ageRanges.map((age) => (
             <button
@@ -131,7 +138,9 @@ export function UserInfoStep({ jewelry, userInfo, onUserInfoChange, onNext }: Us
 
       {/* Style Preference */}
       <div className="mb-8">
-        <Label className="text-sm font-medium text-[#3a3028] mb-3 block">风格偏好</Label>
+        <Label className="text-sm font-medium text-[#3a3028] mb-3 block">
+          {t.customization.userInfoStep.styleLabel}
+        </Label>
         <div className="flex flex-wrap gap-3">
           {styles.map((style) => (
             <button
@@ -151,11 +160,13 @@ export function UserInfoStep({ jewelry, userInfo, onUserInfoChange, onNext }: Us
 
       {/* Additional Notes */}
       <div className="mb-8">
-        <Label className="text-sm font-medium text-[#3a3028] mb-3 block">其他需求（选填）</Label>
+        <Label className="text-sm font-medium text-[#3a3028] mb-3 block">
+          {t.customization.userInfoStep.additionalNotes}
+        </Label>
         <Textarea
           value={userInfo.additionalNotes}
           onChange={(e) => updateField("additionalNotes", e.target.value)}
-          placeholder="例如：喜欢的颜色、特殊寓意、搭配需求等..."
+          placeholder={t.customization.userInfoStep.additionalNotesPlaceholder}
           className="bg-[#faf8f5] border-[#e5e0d8] focus:border-[#c9a96e] focus:ring-[#c9a96e]/20 min-h-[100px]"
         />
       </div>
@@ -165,7 +176,7 @@ export function UserInfoStep({ jewelry, userInfo, onUserInfoChange, onNext }: Us
         disabled={!isValid}
         className="w-full bg-[#c9a96e] text-white hover:bg-[#b8986d] disabled:opacity-50 disabled:cursor-not-allowed h-12 text-base"
       >
-        下一步：选择定制方式
+        {t.customization.userInfoStep.next}
       </Button>
     </div>
   )

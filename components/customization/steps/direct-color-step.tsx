@@ -7,6 +7,7 @@ import { ArrowLeft, Check, Sparkles } from "lucide-react"
 import type { UserInfo, ColorResult } from "../customization-flow"
 import type { JewelryItem } from "@/lib/jewelry-data"
 import { generateColorScheme } from "@/lib/ai-api"
+import { useI18n } from "@/lib/i18n/context"
 
 interface DirectColorStepProps {
   jewelry: JewelryItem
@@ -17,57 +18,6 @@ interface DirectColorStepProps {
   setIsGenerating: (value: boolean) => void
 }
 
-const colorPalettes = [
-  {
-    id: "royal-blue",
-    name: "宫廷蓝",
-    colors: ["#1a4b8c", "#3d7ab8", "#89b4d4", "#c9a96e"],
-    description: "经典皇家蓝，尊贵典雅",
-  },
-  {
-    id: "jade-green",
-    name: "翠玉绿",
-    colors: ["#2d5a4a", "#4a8b6f", "#7bb896", "#c9a96e"],
-    description: "清新翡翠绿，自然灵动",
-  },
-  {
-    id: "rouge-red",
-    name: "胭脂红",
-    colors: ["#8b2942", "#c44569", "#e87a9f", "#c9a96e"],
-    description: "优雅胭脂红，喜庆祥和",
-  },
-  {
-    id: "purple",
-    name: "紫禁紫",
-    colors: ["#4a2c6a", "#7b4e9e", "#a87cc9", "#c9a96e"],
-    description: "尊贵紫罗兰，神秘高雅",
-  },
-  {
-    id: "amber",
-    name: "暖阳橙",
-    colors: ["#b35c1e", "#d97a3a", "#f0a060", "#c9a96e"],
-    description: "温暖琥珀橙，活力四射",
-  },
-  {
-    id: "ivory",
-    name: "素雅白",
-    colors: ["#f5f5f0", "#e8e8e0", "#d4d4cc", "#c9a96e"],
-    description: "纯净素白，简约大方",
-  },
-  {
-    id: "peacock",
-    name: "孔雀蓝",
-    colors: ["#006d77", "#0a9396", "#94d2bd", "#c9a96e"],
-    description: "孔雀羽翠，华丽璀璨",
-  },
-  {
-    id: "peach",
-    name: "桃花粉",
-    colors: ["#d4a5a5", "#e8c4c4", "#f5e6e6", "#c9a96e"],
-    description: "温柔桃粉，甜美可人",
-  },
-]
-
 export function DirectColorStep({
   jewelry,
   userInfo,
@@ -76,7 +26,59 @@ export function DirectColorStep({
   isGenerating,
   setIsGenerating,
 }: DirectColorStepProps) {
+  const { t } = useI18n()
   const [selectedPalette, setSelectedPalette] = useState<string | null>(null)
+
+  const colorPalettes = [
+    {
+      id: "royal-blue",
+      name: t.customization.directColorStep.palettes.royalBlue.name,
+      colors: ["#1a4b8c", "#3d7ab8", "#89b4d4", "#c9a96e"],
+      description: t.customization.directColorStep.palettes.royalBlue.description,
+    },
+    {
+      id: "jade-green",
+      name: t.customization.directColorStep.palettes.jadeGreen.name,
+      colors: ["#2d5a4a", "#4a8b6f", "#7bb896", "#c9a96e"],
+      description: t.customization.directColorStep.palettes.jadeGreen.description,
+    },
+    {
+      id: "rouge-red",
+      name: t.customization.directColorStep.palettes.rougeRed.name,
+      colors: ["#8b2942", "#c44569", "#e87a9f", "#c9a96e"],
+      description: t.customization.directColorStep.palettes.rougeRed.description,
+    },
+    {
+      id: "purple",
+      name: t.customization.directColorStep.palettes.purple.name,
+      colors: ["#4a2c6a", "#7b4e9e", "#a87cc9", "#c9a96e"],
+      description: t.customization.directColorStep.palettes.purple.description,
+    },
+    {
+      id: "amber",
+      name: t.customization.directColorStep.palettes.amber.name,
+      colors: ["#b35c1e", "#d97a3a", "#f0a060", "#c9a96e"],
+      description: t.customization.directColorStep.palettes.amber.description,
+    },
+    {
+      id: "ivory",
+      name: t.customization.directColorStep.palettes.ivory.name,
+      colors: ["#f5f5f0", "#e8e8e0", "#d4d4cc", "#c9a96e"],
+      description: t.customization.directColorStep.palettes.ivory.description,
+    },
+    {
+      id: "peacock",
+      name: t.customization.directColorStep.palettes.peacock.name,
+      colors: ["#006d77", "#0a9396", "#94d2bd", "#c9a96e"],
+      description: t.customization.directColorStep.palettes.peacock.description,
+    },
+    {
+      id: "peach",
+      name: t.customization.directColorStep.palettes.peach.name,
+      colors: ["#d4a5a5", "#e8c4c4", "#f5e6e6", "#c9a96e"],
+      description: t.customization.directColorStep.palettes.peach.description,
+    },
+  ]
 
   const handleGenerate = async () => {
     if (!selectedPalette) return
@@ -95,15 +97,14 @@ export function DirectColorStep({
       })
       onColorGenerated(result)
     } catch (error) {
-      console.error("生成配色方案失败:", error)
-      // Fallback to default result
+      console.error("Failed to generate color scheme:", error)
       onColorGenerated({
         primaryColor: palette.colors[0],
         secondaryColor: palette.colors[1],
         accentColor: palette.colors[2],
         goldTone: palette.colors[3],
         name: palette.name,
-        description: `基于${palette.name}配色方案，为您的${jewelry.name}定制的专属珐琅配色。`,
+        description: palette.description,
       })
     } finally {
       setIsGenerating(false)
@@ -125,8 +126,8 @@ export function DirectColorStep({
         </div>
       </div>
 
-      <h3 className="font-serif text-xl font-medium text-[#3a3028] mb-2">选择配色方案</h3>
-      <p className="text-sm text-[#8a7a6a] mb-6">选择您喜欢的配色，AI将为您生成专属效果图</p>
+      <h3 className="font-serif text-xl font-medium text-[#3a3028] mb-2">{t.customization.directColorStep.title}</h3>
+      <p className="text-sm text-[#8a7a6a] mb-6">{t.customization.directColorStep.subtitle}</p>
 
       <div className="grid grid-cols-2 gap-4 mb-8">
         {colorPalettes.map((palette) => (
@@ -164,7 +165,7 @@ export function DirectColorStep({
           className="flex-1 border-[#c9a96e] text-[#c9a96e] hover:bg-[#c9a96e]/5 h-12 bg-transparent"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          返回
+          {t.customization.directColorStep.back}
         </Button>
         <Button
           onClick={handleGenerate}
@@ -174,12 +175,12 @@ export function DirectColorStep({
           {isGenerating ? (
             <>
               <Sparkles className="w-4 h-4 mr-2 animate-pulse" />
-              AI生成中...
+              {t.customization.directColorStep.generating}
             </>
           ) : (
             <>
               <Sparkles className="w-4 h-4 mr-2" />
-              AI生成配色方案
+              {t.customization.directColorStep.generate}
             </>
           )}
         </Button>

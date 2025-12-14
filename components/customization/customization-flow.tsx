@@ -14,6 +14,7 @@ import { CheckoutStep } from "./steps/checkout-step"
 import { getJewelryById } from "@/lib/jewelry-data"
 import { createClient } from "@/lib/supabase/client"
 import type { User } from "@supabase/supabase-js"
+import { useI18n } from "@/lib/i18n/context"
 
 export type ColorMethod = "direct" | "scene" | "image" | null
 
@@ -47,10 +48,10 @@ interface CustomizationFlowProps {
 
 export function CustomizationFlow({ jewelryId }: CustomizationFlowProps) {
   const jewelry = getJewelryById(jewelryId)
+  const { t } = useI18n()
 
   const [currentStep, setCurrentStep] = useState(1)
   const [user, setUser] = useState<User | null>(null)
-  // </CHANGE>
   const [userInfo, setUserInfo] = useState<UserInfo>({
     purpose: null,
     recipientIdentity: "",
@@ -81,15 +82,14 @@ export function CustomizationFlow({ jewelryId }: CustomizationFlowProps) {
 
     return () => subscription.unsubscribe()
   }, [])
-  // </CHANGE>
 
   const steps = [
-    { number: 1, title: "用户信息" },
-    { number: 2, title: "定制方式" },
-    { number: 3, title: "配色选择" },
-    { number: 4, title: "配色方案" },
-    { number: 5, title: "配饰选择" },
-    { number: 6, title: "确认下单" },
+    { number: 1, title: t.customization.steps.userInfo },
+    { number: 2, title: t.customization.steps.method },
+    { number: 3, title: t.customization.steps.colorSelection },
+    { number: 4, title: t.customization.steps.colorScheme },
+    { number: 5, title: t.customization.steps.accessories },
+    { number: 6, title: t.customization.steps.checkout },
   ]
 
   const handleNext = () => {
@@ -119,7 +119,7 @@ export function CustomizationFlow({ jewelryId }: CustomizationFlowProps) {
   if (!jewelry) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-[#6a5a4a]">未找到该款式</p>
+        <p className="text-[#6a5a4a]">{t.customization.notFound}</p>
       </div>
     )
   }
@@ -204,7 +204,6 @@ export function CustomizationFlow({ jewelryId }: CustomizationFlowProps) {
               onBack={handleBack}
             />
           )}
-          {/* </CHANGE> */}
         </div>
       </div>
     </div>

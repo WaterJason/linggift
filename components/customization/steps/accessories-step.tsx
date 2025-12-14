@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft, Check } from "lucide-react"
 import type { Accessories } from "../customization-flow"
 import type { JewelryItem } from "@/lib/jewelry-data"
+import { useI18n } from "@/lib/i18n/context"
 
 interface AccessoriesStepProps {
   jewelry: JewelryItem
@@ -14,32 +15,74 @@ interface AccessoriesStepProps {
   onBack: () => void
 }
 
-const gemstones = [
-  { id: "none", name: "无", price: 0 },
-  { id: "pearl", name: "珍珠", price: 280, image: "/pearl-gemstone.png" },
-  { id: "agate", name: "玛瑙", price: 320, image: "/agate-gemstone.png" },
-  { id: "jade", name: "翡翠", price: 580, image: "/jade-gemstone.jpg" },
-  { id: "crystal", name: "水晶", price: 180, image: "/crystal-gemstone.jpg" },
-  { id: "turquoise", name: "绿松石", price: 420, image: "/turquoise-gemstone.jpg" },
-]
-
-const chains = [
-  { id: "none", name: "无", price: 0 },
-  { id: "gold-18k", name: "18K金链", price: 1280, image: "/18k-gold-chain.jpg" },
-  { id: "gold-14k", name: "14K金链", price: 880, image: "/14k-gold-chain.jpg" },
-  { id: "silver", name: "925银链", price: 280, image: "/silver-chain-jewelry.png" },
-  { id: "rose-gold", name: "玫瑰金链", price: 980, image: "/rose-gold-chain.jpg" },
-]
-
-const ropes = [
-  { id: "none", name: "无", price: 0 },
-  { id: "silk-red", name: "红色丝绳", price: 68, image: "/red-silk-cord-jewelry.jpg" },
-  { id: "silk-black", name: "黑色丝绳", price: 68, image: "/black-silk-cord-jewelry.jpg" },
-  { id: "leather", name: "皮绳", price: 128, image: "/leather-cord-jewelry.jpg" },
-  { id: "sweater", name: "毛衣链绳", price: 168, image: "/sweater-chain-long-necklace.jpg" },
-]
-
 export function AccessoriesStep({ jewelry, accessories, onAccessoriesChange, onNext, onBack }: AccessoriesStepProps) {
+  const { t } = useI18n()
+
+  const gemstones = [
+    { id: "none", name: t.customization.accessoriesStep.gemstones.none, price: 0 },
+    { id: "pearl", name: t.customization.accessoriesStep.gemstones.pearl, price: 280, image: "/pearl-gemstone.png" },
+    { id: "agate", name: t.customization.accessoriesStep.gemstones.agate, price: 320, image: "/agate-gemstone.png" },
+    { id: "jade", name: t.customization.accessoriesStep.gemstones.jade, price: 580, image: "/jade-gemstone.jpg" },
+    {
+      id: "crystal",
+      name: t.customization.accessoriesStep.gemstones.crystal,
+      price: 180,
+      image: "/crystal-gemstone.jpg",
+    },
+    {
+      id: "turquoise",
+      name: t.customization.accessoriesStep.gemstones.turquoise,
+      price: 420,
+      image: "/turquoise-gemstone.jpg",
+    },
+  ]
+
+  const chains = [
+    { id: "none", name: t.customization.accessoriesStep.chains.none, price: 0 },
+    { id: "gold-18k", name: t.customization.accessoriesStep.chains.gold18k, price: 1280, image: "/18k-gold-chain.jpg" },
+    { id: "gold-14k", name: t.customization.accessoriesStep.chains.gold14k, price: 880, image: "/14k-gold-chain.jpg" },
+    {
+      id: "silver",
+      name: t.customization.accessoriesStep.chains.silver,
+      price: 280,
+      image: "/silver-chain-jewelry.png",
+    },
+    {
+      id: "rose-gold",
+      name: t.customization.accessoriesStep.chains.roseGold,
+      price: 980,
+      image: "/rose-gold-chain.jpg",
+    },
+  ]
+
+  const ropes = [
+    { id: "none", name: t.customization.accessoriesStep.ropes.none, price: 0 },
+    {
+      id: "silk-red",
+      name: t.customization.accessoriesStep.ropes.silkRed,
+      price: 68,
+      image: "/red-silk-cord-jewelry.jpg",
+    },
+    {
+      id: "silk-black",
+      name: t.customization.accessoriesStep.ropes.silkBlack,
+      price: 68,
+      image: "/black-silk-cord-jewelry.jpg",
+    },
+    {
+      id: "leather",
+      name: t.customization.accessoriesStep.ropes.leather,
+      price: 128,
+      image: "/leather-cord-jewelry.jpg",
+    },
+    {
+      id: "sweater",
+      name: t.customization.accessoriesStep.ropes.sweater,
+      price: 168,
+      image: "/sweater-chain-long-necklace.jpg",
+    },
+  ]
+
   const updateAccessory = <K extends keyof Accessories>(key: K, value: Accessories[K]) => {
     onAccessoriesChange({ ...accessories, [key]: value })
   }
@@ -70,19 +113,19 @@ export function AccessoriesStep({ jewelry, accessories, onAccessoriesChange, onN
         </div>
       </div>
 
-      <h3 className="font-serif text-xl font-medium text-[#3a3028] mb-2">选择配饰</h3>
-      <p className="text-sm text-[#8a7a6a] mb-8">为您的首饰搭配珠宝和链条（可选）</p>
+      <h3 className="font-serif text-xl font-medium text-[#3a3028] mb-2">{t.customization.accessoriesStep.title}</h3>
+      <p className="text-sm text-[#8a7a6a] mb-8">{t.customization.accessoriesStep.subtitle}</p>
 
       {/* Gemstones */}
       <div className="mb-8">
-        <h4 className="font-medium text-[#3a3028] mb-4">珠宝点缀</h4>
+        <h4 className="font-medium text-[#3a3028] mb-4">{t.customization.accessoriesStep.gemstones.title}</h4>
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
           {gemstones.map((gem) => (
             <button
               key={gem.id}
               onClick={() => updateAccessory("gemstone", gem.id === "none" ? null : gem.id)}
               className={`p-3 rounded-xl border-2 transition-all text-center ${
-                (accessories.gemstone === gem.id) || (gem.id === "none" && !accessories.gemstone)
+                accessories.gemstone === gem.id || (gem.id === "none" && !accessories.gemstone)
                   ? "border-[#c9a96e] bg-[#faf8f5]"
                   : "border-transparent bg-[#faf8f5] hover:border-[#c9a96e]/50"
               }`}
@@ -101,14 +144,14 @@ export function AccessoriesStep({ jewelry, accessories, onAccessoriesChange, onN
 
       {/* Chains */}
       <div className="mb-8">
-        <h4 className="font-medium text-[#3a3028] mb-4">链条选择</h4>
+        <h4 className="font-medium text-[#3a3028] mb-4">{t.customization.accessoriesStep.chains.title}</h4>
         <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
           {chains.map((chain) => (
             <button
               key={chain.id}
               onClick={() => updateAccessory("chain", chain.id === "none" ? null : chain.id)}
               className={`p-3 rounded-xl border-2 transition-all text-center ${
-                (accessories.chain === chain.id) || (chain.id === "none" && !accessories.chain)
+                accessories.chain === chain.id || (chain.id === "none" && !accessories.chain)
                   ? "border-[#c9a96e] bg-[#faf8f5]"
                   : "border-transparent bg-[#faf8f5] hover:border-[#c9a96e]/50"
               }`}
@@ -127,14 +170,14 @@ export function AccessoriesStep({ jewelry, accessories, onAccessoriesChange, onN
 
       {/* Ropes */}
       <div className="mb-8">
-        <h4 className="font-medium text-[#3a3028] mb-4">绳饰选择</h4>
+        <h4 className="font-medium text-[#3a3028] mb-4">{t.customization.accessoriesStep.ropes.title}</h4>
         <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
           {ropes.map((rope) => (
             <button
               key={rope.id}
               onClick={() => updateAccessory("rope", rope.id === "none" ? null : rope.id)}
               className={`p-3 rounded-xl border-2 transition-all text-center ${
-                (accessories.rope === rope.id) || (rope.id === "none" && !accessories.rope)
+                accessories.rope === rope.id || (rope.id === "none" && !accessories.rope)
                   ? "border-[#c9a96e] bg-[#faf8f5]"
                   : "border-transparent bg-[#faf8f5] hover:border-[#c9a96e]/50"
               }`}
@@ -155,7 +198,8 @@ export function AccessoriesStep({ jewelry, accessories, onAccessoriesChange, onN
       {calculateTotal() > 0 && (
         <div className="bg-[#faf8f5] rounded-xl p-4 mb-8">
           <p className="text-sm text-[#6a5a4a]">
-            配饰费用：<span className="font-medium text-[#c9a96e]">+¥{calculateTotal()}</span>
+            {t.customization.accessoriesStep.accessoryFee}：
+            <span className="font-medium text-[#c9a96e]">+¥{calculateTotal()}</span>
           </p>
         </div>
       )}
@@ -167,11 +211,11 @@ export function AccessoriesStep({ jewelry, accessories, onAccessoriesChange, onN
           className="flex-1 border-[#c9a96e] text-[#c9a96e] hover:bg-[#c9a96e]/5 h-12 bg-transparent"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          返回
+          {t.customization.accessoriesStep.back}
         </Button>
         <Button onClick={onNext} className="flex-[2] bg-[#c9a96e] text-white hover:bg-[#b8986d] h-12">
           <Check className="w-4 h-4 mr-2" />
-          确认，去结算
+          {t.customization.accessoriesStep.confirm}
         </Button>
       </div>
     </div>

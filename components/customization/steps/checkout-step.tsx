@@ -12,6 +12,7 @@ import { ArrowLeft, CreditCard, LogIn } from "lucide-react"
 import type { ColorResult, Accessories, UserInfo } from "../customization-flow"
 import type { JewelryItem } from "@/lib/jewelry-data"
 import type { User } from "@supabase/supabase-js"
+import { useI18n } from "@/lib/i18n/context"
 
 interface CheckoutStepProps {
   jewelry: JewelryItem
@@ -32,29 +33,8 @@ interface ShippingInfo {
   notes: string
 }
 
-const gemstoneNames: Record<string, { name: string; price: number }> = {
-  pearl: { name: "珍珠", price: 280 },
-  agate: { name: "玛瑙", price: 320 },
-  jade: { name: "翡翠", price: 580 },
-  crystal: { name: "水晶", price: 180 },
-  turquoise: { name: "绿松石", price: 420 },
-}
-
-const chainNames: Record<string, { name: string; price: number }> = {
-  "gold-18k": { name: "18K金链", price: 1280 },
-  "gold-14k": { name: "14K金链", price: 880 },
-  silver: { name: "925银链", price: 280 },
-  "rose-gold": { name: "玫瑰金链", price: 980 },
-}
-
-const ropeNames: Record<string, { name: string; price: number }> = {
-  "silk-red": { name: "红色丝绳", price: 68 },
-  "silk-black": { name: "黑色丝绳", price: 68 },
-  leather: { name: "皮绳", price: 128 },
-  sweater: { name: "毛衣链绳", price: 168 },
-}
-
 export function CheckoutStep({ jewelry, colorResult, accessories, userInfo, user, onBack }: CheckoutStepProps) {
+  const { t, locale } = useI18n()
   const router = useRouter()
   const [shippingInfo, setShippingInfo] = useState<ShippingInfo>({
     recipientName: "",
@@ -67,6 +47,28 @@ export function CheckoutStep({ jewelry, colorResult, accessories, userInfo, user
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const gemstoneNames: Record<string, { name: string; price: number }> = {
+    pearl: { name: t.customization.accessoriesStep.gemstones.pearl, price: 280 },
+    agate: { name: t.customization.accessoriesStep.gemstones.agate, price: 320 },
+    jade: { name: t.customization.accessoriesStep.gemstones.jade, price: 580 },
+    crystal: { name: t.customization.accessoriesStep.gemstones.crystal, price: 180 },
+    turquoise: { name: t.customization.accessoriesStep.gemstones.turquoise, price: 420 },
+  }
+
+  const chainNames: Record<string, { name: string; price: number }> = {
+    "gold-18k": { name: t.customization.accessoriesStep.chains.gold18k, price: 1280 },
+    "gold-14k": { name: t.customization.accessoriesStep.chains.gold14k, price: 880 },
+    silver: { name: t.customization.accessoriesStep.chains.silver, price: 280 },
+    "rose-gold": { name: t.customization.accessoriesStep.chains.roseGold, price: 980 },
+  }
+
+  const ropeNames: Record<string, { name: string; price: number }> = {
+    "silk-red": { name: t.customization.accessoriesStep.ropes.silkRed, price: 68 },
+    "silk-black": { name: t.customization.accessoriesStep.ropes.silkBlack, price: 68 },
+    leather: { name: t.customization.accessoriesStep.ropes.leather, price: 128 },
+    sweater: { name: t.customization.accessoriesStep.ropes.sweater, price: 168 },
+  }
 
   const updateField = <K extends keyof ShippingInfo>(field: K, value: ShippingInfo[K]) => {
     setShippingInfo({ ...shippingInfo, [field]: value })
@@ -108,7 +110,6 @@ export function CheckoutStep({ jewelry, colorResult, accessories, userInfo, user
     setError(null)
 
     try {
-      // Prepare checkout data
       const accessoryIds: string[] = []
       if (accessories.gemstone) accessoryIds.push(accessories.gemstone)
       if (accessories.chain) accessoryIds.push(accessories.chain)
@@ -138,16 +139,14 @@ export function CheckoutStep({ jewelry, colorResult, accessories, userInfo, user
         },
       }
 
-      // Redirect to checkout page with data
       const encodedData = encodeURIComponent(JSON.stringify(checkoutData))
       router.push(`/checkout?data=${encodedData}`)
     } catch (err) {
       console.error("Checkout error:", err)
-      setError(err instanceof Error ? err.message : "结算失败，请重试")
+      setError(err instanceof Error ? err.message : "Checkout failed")
       setIsSubmitting(false)
     }
   }
-  // </CHANGE>
 
   if (!user) {
     return (
@@ -155,8 +154,10 @@ export function CheckoutStep({ jewelry, colorResult, accessories, userInfo, user
         <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#c9a96e]/10 flex items-center justify-center">
           <LogIn className="w-10 h-10 text-[#c9a96e]" />
         </div>
-        <h3 className="font-serif text-2xl font-medium text-[#3a3028] mb-2">请先登录</h3>
-        <p className="text-[#6a5a4a] mb-6">登录后即可完成订单支付</p>
+        <h3 className="font-serif text-2xl font-medium text-[#3a3028] mb-2">
+          {t.customization.checkoutStep.loginRequired.title}
+        </h3>
+        <p className="text-[#6a5a4a] mb-6">{t.customization.checkoutStep.loginRequired.description}</p>
         <div className="flex gap-4 justify-center">
           <Button
             variant="outline"
@@ -164,20 +165,21 @@ export function CheckoutStep({ jewelry, colorResult, accessories, userInfo, user
             className="border-[#c9a96e] text-[#c9a96e] hover:bg-[#c9a96e]/5 bg-transparent"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            返回
+            {t.customization.checkoutStep.loginRequired.back}
           </Button>
           <Button asChild className="bg-[#c9a96e] text-white hover:bg-[#b8986d]">
-            <Link href={`/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`}>立即登录</Link>
+            <Link href={`/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`}>
+              {t.customization.checkoutStep.loginRequired.login}
+            </Link>
           </Button>
         </div>
       </div>
     )
   }
-  // </CHANGE>
 
   return (
     <div className="bg-white rounded-2xl shadow-sm p-6 lg:p-8">
-      <h3 className="font-serif text-xl font-medium text-[#3a3028] mb-6">确认订单</h3>
+      <h3 className="font-serif text-xl font-medium text-[#3a3028] mb-6">{t.customization.checkoutStep.title}</h3>
 
       {/* Order Summary */}
       <div className="bg-[#faf8f5] rounded-xl p-4 mb-8">
@@ -195,7 +197,9 @@ export function CheckoutStep({ jewelry, colorResult, accessories, userInfo, user
           </div>
           <div className="flex-1">
             <h4 className="font-serif font-medium text-[#3a3028]">{jewelry.name}</h4>
-            <p className="text-sm text-[#8a7a6a] mb-2">配色方案：{colorResult.name}</p>
+            <p className="text-sm text-[#8a7a6a] mb-2">
+              {t.customization.checkoutStep.orderSummary.jewelryPrice}: {colorResult.name}
+            </p>
             <div className="flex gap-1">
               {[
                 colorResult.primaryColor,
@@ -215,7 +219,7 @@ export function CheckoutStep({ jewelry, colorResult, accessories, userInfo, user
 
         <div className="border-t border-[#e5e0d8] pt-4 space-y-2 text-sm">
           <div className="flex justify-between">
-            <span className="text-[#6a5a4a]">首饰价格</span>
+            <span className="text-[#6a5a4a]">{t.customization.checkoutStep.orderSummary.jewelryPrice}</span>
             <span className="text-[#3a3028]">{jewelry.price}</span>
           </div>
           {accessories.gemstone && gemstoneNames[accessories.gemstone] && (
@@ -237,7 +241,7 @@ export function CheckoutStep({ jewelry, colorResult, accessories, userInfo, user
             </div>
           )}
           <div className="flex justify-between pt-2 border-t border-[#e5e0d8] font-medium">
-            <span className="text-[#3a3028]">合计</span>
+            <span className="text-[#3a3028]">{t.customization.checkoutStep.orderSummary.total}</span>
             <span className="text-[#c9a96e] text-lg">¥{calculateTotal()}</span>
           </div>
         </div>
@@ -245,24 +249,28 @@ export function CheckoutStep({ jewelry, colorResult, accessories, userInfo, user
 
       {/* Shipping Form */}
       <div className="space-y-4 mb-8">
-        <h4 className="font-medium text-[#3a3028]">收件信息</h4>
+        <h4 className="font-medium text-[#3a3028]">{t.customization.checkoutStep.shippingInfo.title}</h4>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label className="text-sm text-[#6a5a4a] mb-1.5 block">收件人姓名</Label>
+            <Label className="text-sm text-[#6a5a4a] mb-1.5 block">
+              {t.customization.checkoutStep.shippingInfo.recipientName}
+            </Label>
             <Input
               value={shippingInfo.recipientName}
               onChange={(e) => updateField("recipientName", e.target.value)}
-              placeholder="请输入姓名"
+              placeholder={t.customization.checkoutStep.shippingInfo.recipientNamePlaceholder}
               className="bg-[#faf8f5] border-[#e5e0d8] focus:border-[#c9a96e]"
             />
           </div>
           <div>
-            <Label className="text-sm text-[#6a5a4a] mb-1.5 block">联系电话</Label>
+            <Label className="text-sm text-[#6a5a4a] mb-1.5 block">
+              {t.customization.checkoutStep.shippingInfo.phone}
+            </Label>
             <Input
               value={shippingInfo.phone}
               onChange={(e) => updateField("phone", e.target.value)}
-              placeholder="请输入手机号"
+              placeholder={t.customization.checkoutStep.shippingInfo.phonePlaceholder}
               className="bg-[#faf8f5] border-[#e5e0d8] focus:border-[#c9a96e]"
             />
           </div>
@@ -270,50 +278,60 @@ export function CheckoutStep({ jewelry, colorResult, accessories, userInfo, user
 
         <div className="grid grid-cols-3 gap-4">
           <div>
-            <Label className="text-sm text-[#6a5a4a] mb-1.5 block">省份</Label>
+            <Label className="text-sm text-[#6a5a4a] mb-1.5 block">
+              {t.customization.checkoutStep.shippingInfo.province}
+            </Label>
             <Input
               value={shippingInfo.province}
               onChange={(e) => updateField("province", e.target.value)}
-              placeholder="省份"
+              placeholder={t.customization.checkoutStep.shippingInfo.provincePlaceholder}
               className="bg-[#faf8f5] border-[#e5e0d8] focus:border-[#c9a96e]"
             />
           </div>
           <div>
-            <Label className="text-sm text-[#6a5a4a] mb-1.5 block">城市</Label>
+            <Label className="text-sm text-[#6a5a4a] mb-1.5 block">
+              {t.customization.checkoutStep.shippingInfo.city}
+            </Label>
             <Input
               value={shippingInfo.city}
               onChange={(e) => updateField("city", e.target.value)}
-              placeholder="城市"
+              placeholder={t.customization.checkoutStep.shippingInfo.cityPlaceholder}
               className="bg-[#faf8f5] border-[#e5e0d8] focus:border-[#c9a96e]"
             />
           </div>
           <div>
-            <Label className="text-sm text-[#6a5a4a] mb-1.5 block">区县</Label>
+            <Label className="text-sm text-[#6a5a4a] mb-1.5 block">
+              {t.customization.checkoutStep.shippingInfo.district}
+            </Label>
             <Input
               value={shippingInfo.district}
               onChange={(e) => updateField("district", e.target.value)}
-              placeholder="区县"
+              placeholder={t.customization.checkoutStep.shippingInfo.districtPlaceholder}
               className="bg-[#faf8f5] border-[#e5e0d8] focus:border-[#c9a96e]"
             />
           </div>
         </div>
 
         <div>
-          <Label className="text-sm text-[#6a5a4a] mb-1.5 block">详细地址</Label>
+          <Label className="text-sm text-[#6a5a4a] mb-1.5 block">
+            {t.customization.checkoutStep.shippingInfo.address}
+          </Label>
           <Textarea
             value={shippingInfo.address}
             onChange={(e) => updateField("address", e.target.value)}
-            placeholder="请输入详细地址（街道、门牌号等）"
+            placeholder={t.customization.checkoutStep.shippingInfo.addressPlaceholder}
             className="bg-[#faf8f5] border-[#e5e0d8] focus:border-[#c9a96e] min-h-[80px]"
           />
         </div>
 
         <div>
-          <Label className="text-sm text-[#6a5a4a] mb-1.5 block">备注（选填）</Label>
+          <Label className="text-sm text-[#6a5a4a] mb-1.5 block">
+            {t.customization.checkoutStep.shippingInfo.notes}
+          </Label>
           <Input
             value={shippingInfo.notes}
             onChange={(e) => updateField("notes", e.target.value)}
-            placeholder="如有特殊要求请备注"
+            placeholder={t.customization.checkoutStep.shippingInfo.notesPlaceholder}
             className="bg-[#faf8f5] border-[#e5e0d8] focus:border-[#c9a96e]"
           />
         </div>
@@ -328,7 +346,7 @@ export function CheckoutStep({ jewelry, colorResult, accessories, userInfo, user
           className="flex-1 border-[#c9a96e] text-[#c9a96e] hover:bg-[#c9a96e]/5 h-12 bg-transparent"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          返回
+          {t.customization.checkoutStep.back}
         </Button>
         <Button
           onClick={handleSubmit}
@@ -336,11 +354,11 @@ export function CheckoutStep({ jewelry, colorResult, accessories, userInfo, user
           className="flex-[2] bg-[#c9a96e] text-white hover:bg-[#b8986d] disabled:opacity-50 h-12"
         >
           {isSubmitting ? (
-            "处理中..."
+            t.customization.checkoutStep.submitting
           ) : (
             <>
               <CreditCard className="w-4 h-4 mr-2" />
-              确认支付 ¥{calculateTotal()}
+              {t.customization.checkoutStep.submit} ¥{calculateTotal()}
             </>
           )}
         </Button>

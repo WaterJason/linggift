@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useRef } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -9,6 +8,7 @@ import { ArrowLeft, Upload, X, Sparkles, ImageIcon } from "lucide-react"
 import type { UserInfo, ColorResult } from "../customization-flow"
 import type { JewelryItem } from "@/lib/jewelry-data"
 import { generateColorSchemeFromImage } from "@/lib/ai-api"
+import { useI18n } from "@/lib/i18n/context"
 
 interface ImageColorStepProps {
   jewelry: JewelryItem
@@ -27,6 +27,7 @@ export function ImageColorStep({
   isGenerating,
   setIsGenerating,
 }: ImageColorStepProps) {
+  const { t } = useI18n()
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
   const [imageFile, setImageFile] = useState<File | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -81,15 +82,14 @@ export function ImageColorStep({
       })
       onColorGenerated(result)
     } catch (error) {
-      console.error("生成配色方案失败:", error)
-      // Fallback result
+      console.error("Failed to generate color scheme:", error)
       onColorGenerated({
         primaryColor: "#2d5a4a",
         secondaryColor: "#4a8b6f",
         accentColor: "#7bb896",
         goldTone: "#c9a96e",
-        name: "自然和谐",
-        description: "根据您上传的图片，AI为您推荐的和谐配色方案。",
+        name: "Natural Harmony",
+        description: "AI recommended color scheme based on your uploaded image.",
       })
     } finally {
       setIsGenerating(false)
@@ -111,8 +111,8 @@ export function ImageColorStep({
         </div>
       </div>
 
-      <h3 className="font-serif text-xl font-medium text-[#3a3028] mb-2">上传参考图片</h3>
-      <p className="text-sm text-[#8a7a6a] mb-6">上传服装、角色或任意图片，AI将分析色彩为您推荐最搭配的珐琅配色</p>
+      <h3 className="font-serif text-xl font-medium text-[#3a3028] mb-2">{t.customization.imageColorStep.title}</h3>
+      <p className="text-sm text-[#8a7a6a] mb-6">{t.customization.imageColorStep.subtitle}</p>
 
       {/* Upload Area */}
       <div className="mb-8">
@@ -126,13 +126,13 @@ export function ImageColorStep({
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#c9a96e]/10 flex items-center justify-center">
               <Upload className="w-8 h-8 text-[#c9a96e]" />
             </div>
-            <p className="font-medium text-[#3a3028] mb-2">点击或拖拽上传图片</p>
-            <p className="text-sm text-[#8a7a6a]">支持 JPG、PNG 格式，建议清晰的服装或人物照片</p>
+            <p className="font-medium text-[#3a3028] mb-2">{t.customization.imageColorStep.uploadArea.title}</p>
+            <p className="text-sm text-[#8a7a6a]">{t.customization.imageColorStep.uploadArea.description}</p>
           </div>
         ) : (
           <div className="relative rounded-2xl overflow-hidden bg-[#faf8f5]">
             <div className="aspect-video relative">
-              <Image src={uploadedImage || "/placeholder.svg"} alt="上传的图片" fill className="object-contain" />
+              <Image src={uploadedImage || "/placeholder.svg"} alt="Uploaded" fill className="object-contain" />
             </div>
             <button
               onClick={removeImage}
@@ -149,12 +149,12 @@ export function ImageColorStep({
       <div className="bg-[#faf8f5] rounded-xl p-4 mb-8">
         <h4 className="font-medium text-sm text-[#3a3028] mb-2 flex items-center gap-2">
           <ImageIcon className="w-4 h-4 text-[#c9a96e]" />
-          图片建议
+          {t.customization.imageColorStep.tips.title}
         </h4>
         <ul className="text-sm text-[#6a5a4a] space-y-1">
-          <li>• 上传您想要搭配的服装照片</li>
-          <li>• 或上传喜欢的角色/风格参考图</li>
-          <li>• 图片色彩越清晰，AI分析越准确</li>
+          <li>• {t.customization.imageColorStep.tips.tip1}</li>
+          <li>• {t.customization.imageColorStep.tips.tip2}</li>
+          <li>• {t.customization.imageColorStep.tips.tip3}</li>
         </ul>
       </div>
 
@@ -165,7 +165,7 @@ export function ImageColorStep({
           className="flex-1 border-[#c9a96e] text-[#c9a96e] hover:bg-[#c9a96e]/5 h-12 bg-transparent"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          返回
+          {t.customization.imageColorStep.back}
         </Button>
         <Button
           onClick={handleGenerate}
@@ -175,12 +175,12 @@ export function ImageColorStep({
           {isGenerating ? (
             <>
               <Sparkles className="w-4 h-4 mr-2 animate-pulse" />
-              AI分析中...
+              {t.customization.imageColorStep.generating}
             </>
           ) : (
             <>
               <Sparkles className="w-4 h-4 mr-2" />
-              AI智能配色
+              {t.customization.imageColorStep.generate}
             </>
           )}
         </Button>

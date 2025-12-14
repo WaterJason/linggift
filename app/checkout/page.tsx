@@ -10,6 +10,7 @@ import { Card } from "@/components/ui/card"
 import { ArrowLeft, CheckCircle, Loader2 } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+import { useI18n } from "@/lib/i18n/context"
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
@@ -21,13 +22,14 @@ function CheckoutContent() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [paymentComplete, setPaymentComplete] = useState(false)
+  const { t } = useI18n()
 
   useEffect(() => {
     const initCheckout = async () => {
       try {
         const dataParam = searchParams.get("data")
         if (!dataParam) {
-          throw new Error("缺少订单数据")
+          throw new Error(t.checkout.error.missingData)
         }
 
         const checkoutData = JSON.parse(decodeURIComponent(dataParam))
@@ -37,19 +39,18 @@ function CheckoutContent() {
         setOrderNumber(result.orderNumber)
       } catch (err) {
         console.error("Checkout error:", err)
-        setError(err instanceof Error ? err.message : "创建订单失败")
+        setError(err instanceof Error ? err.message : t.checkout.error.title)
       } finally {
         setIsLoading(false)
       }
     }
 
     initCheckout()
-  }, [searchParams])
+  }, [searchParams, t])
 
   const handleComplete = useCallback(async () => {
     if (clientSecret) {
       try {
-        // 从 clientSecret 获取 session ID
         const sessionId = clientSecret.split("_secret_")[0]
         await updateOrderStatus(sessionId, "paid")
         setPaymentComplete(true)
@@ -64,7 +65,7 @@ function CheckoutContent() {
       <div className="min-h-screen bg-[#faf9f7] flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-[#c9a86c] animate-spin mx-auto mb-4" />
-          <p className="text-[#8b7355]">正在创建订单...</p>
+          <p className="text-[#8b7355]">{t.checkout.loading}</p>
         </div>
       </div>
     )
@@ -75,11 +76,11 @@ function CheckoutContent() {
       <div className="min-h-screen bg-[#faf9f7] flex items-center justify-center p-6">
         <Card className="max-w-md w-full p-8 text-center">
           <div className="text-red-500 mb-4">
-            <p className="text-lg font-medium">订单创建失败</p>
+            <p className="text-lg font-medium">{t.checkout.error.title}</p>
             <p className="text-sm mt-2">{error}</p>
           </div>
           <Button asChild className="bg-[#c9a86c] hover:bg-[#b89555]">
-            <Link href="/">返回首页</Link>
+            <Link href="/">{t.checkout.error.backHome}</Link>
           </Button>
         </Card>
       </div>
@@ -91,15 +92,17 @@ function CheckoutContent() {
       <div className="min-h-screen bg-[#faf9f7] flex items-center justify-center p-6">
         <Card className="max-w-md w-full p-8 text-center">
           <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-medium text-[#8b7355] mb-2">支付成功！</h2>
-          <p className="text-[#666] mb-2">您的订单已确认</p>
-          <p className="text-sm text-[#999] mb-6">订单号：{orderNumber}</p>
+          <h2 className="text-2xl font-medium text-[#8b7355] mb-2">{t.checkout.success.title}</h2>
+          <p className="text-[#666] mb-2">{t.checkout.success.confirmed}</p>
+          <p className="text-sm text-[#999] mb-6">
+            {t.checkout.success.orderNumber}：{orderNumber}
+          </p>
           <div className="space-y-3">
             <Button asChild className="w-full bg-[#c9a86c] hover:bg-[#b89555]">
-              <Link href="/orders">查看订单</Link>
+              <Link href="/orders">{t.checkout.success.viewOrders}</Link>
             </Button>
             <Button asChild variant="outline" className="w-full bg-transparent">
-              <Link href="/">继续购物</Link>
+              <Link href="/">{t.checkout.success.continueShopping}</Link>
             </Button>
           </div>
         </Card>
@@ -116,8 +119,12 @@ function CheckoutContent() {
           </Button>
           <Image src="/images/logo-e5-ba-95.png" alt="聆花珐琅" width={40} height={40} className="object-contain" />
           <div>
-            <h1 className="text-lg font-medium text-[#8b7355]">确认支付</h1>
-            {orderNumber && <p className="text-xs text-[#999]">订单号：{orderNumber}</p>}
+            <h1 className="text-lg font-medium text-[#8b7355]">{t.checkout.title}</h1>
+            {orderNumber && (
+              <p className="text-xs text-[#999]">
+                {t.checkout.success.orderNumber}：{orderNumber}
+              </p>
+            )}
           </div>
         </div>
       </header>

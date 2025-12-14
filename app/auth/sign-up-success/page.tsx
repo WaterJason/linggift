@@ -1,10 +1,15 @@
+"use client"
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Image from "next/image"
 import { Mail } from "lucide-react"
+import { useI18n } from "@/lib/i18n/context"
 
 export default function SignUpSuccessPage() {
+  const { t } = useI18n()
+
   return (
     <div className="min-h-screen bg-[#faf9f7] flex items-center justify-center p-6">
       <div className="w-full max-w-md">
@@ -18,15 +23,13 @@ export default function SignUpSuccessPage() {
               <div className="mx-auto w-16 h-16 bg-[#c9a86c]/10 rounded-full flex items-center justify-center mb-4">
                 <Mail className="w-8 h-8 text-[#c9a86c]" />
               </div>
-              <CardTitle className="text-2xl text-[#8b7355]">注册成功！</CardTitle>
-              <CardDescription className="text-[#666]">请查收您的邮箱以确认账户</CardDescription>
+              <CardTitle className="text-2xl text-[#8b7355]">{t.auth.signUpSuccess.title}</CardTitle>
+              <CardDescription className="text-[#666]">{t.auth.signUpSuccess.description}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <p className="text-sm text-[#666]">
-                我们已向您的邮箱发送了一封确认邮件，请点击邮件中的链接以激活您的账户。
-              </p>
+              <p className="text-sm text-[#666]">{t.auth.signUpSuccess.message}</p>
               <Button asChild className="w-full bg-[#c9a86c] hover:bg-[#b89555]">
-                <Link href="/auth/login">返回登录</Link>
+                <Link href="/auth/login">{t.auth.signUpSuccess.backToLogin}</Link>
               </Button>
             </CardContent>
           </Card>

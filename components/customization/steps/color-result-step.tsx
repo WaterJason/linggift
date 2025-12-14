@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft, RefreshCw, Check, Sparkles } from "lucide-react"
 import type { ColorResult } from "../customization-flow"
 import type { JewelryItem } from "@/lib/jewelry-data"
+import { useI18n } from "@/lib/i18n/context"
 
 interface ColorResultStepProps {
   jewelry: JewelryItem
@@ -15,15 +16,20 @@ interface ColorResultStepProps {
 }
 
 export function ColorResultStep({ jewelry, colorResult, onConfirm, onRegenerate, onBack }: ColorResultStepProps) {
+  const { t } = useI18n()
+
   return (
     <div className="bg-white rounded-2xl shadow-sm p-6 lg:p-8">
-      <h3 className="font-serif text-xl font-medium text-[#3a3028] mb-2 text-center">AI为您定制的配色方案</h3>
+      <h3 className="font-serif text-xl font-medium text-[#3a3028] mb-2 text-center">
+        {t.customization.colorResultStep.title}
+      </h3>
       <p className="text-sm text-[#8a7a6a] mb-8 text-center">
-        方案名称：<span className="text-[#c9a96e] font-medium">{colorResult.name}</span>
+        {t.customization.colorResultStep.schemeLabel}：
+        <span className="text-[#c9a96e] font-medium">{colorResult.name}</span>
       </p>
 
       <div className="grid lg:grid-cols-2 gap-8 mb-8">
-        {/* Preview - 支持显示AI生成的效果图 */}
+        {/* Preview */}
         <div className="relative">
           <div className="aspect-square rounded-2xl overflow-hidden bg-[#faf8f5] p-4">
             <div className="relative w-full h-full">
@@ -31,19 +37,18 @@ export function ColorResultStep({ jewelry, colorResult, onConfirm, onRegenerate,
                 <>
                   <Image
                     src={colorResult.generatedImage || "/placeholder.svg"}
-                    alt={`${jewelry.name} - ${colorResult.name}配色效果图`}
+                    alt={`${jewelry.name} - ${colorResult.name}`}
                     fill
                     className="object-contain"
                   />
                   <div className="absolute top-2 right-2 bg-[#c9a96e] text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
                     <Sparkles className="w-3 h-3" />
-                    AI生成
+                    {t.customization.colorResultStep.aiGenerated}
                   </div>
                 </>
               ) : (
                 <>
                   <Image src={jewelry.image || "/placeholder.svg"} alt={jewelry.name} fill className="object-contain" />
-                  {/* Color overlay simulation */}
                   <div
                     className="absolute inset-0 mix-blend-multiply opacity-30 rounded-full"
                     style={{
@@ -63,7 +68,7 @@ export function ColorResultStep({ jewelry, colorResult, onConfirm, onRegenerate,
 
         {/* Color Details */}
         <div>
-          <h4 className="font-serif text-lg mb-4 text-[#3a3028]">配色详情</h4>
+          <h4 className="font-serif text-lg mb-4 text-[#3a3028]">{t.customization.colorResultStep.colorDetails}</h4>
 
           <div className="space-y-4 mb-6">
             <div className="flex items-center gap-4 p-3 bg-[#faf8f5] rounded-xl">
@@ -72,7 +77,7 @@ export function ColorResultStep({ jewelry, colorResult, onConfirm, onRegenerate,
                 style={{ backgroundColor: colorResult.primaryColor }}
               />
               <div>
-                <p className="text-sm font-medium text-[#3a3028]">主色调</p>
+                <p className="text-sm font-medium text-[#3a3028]">{t.customization.colorResultStep.primaryColor}</p>
                 <p className="text-xs text-[#8a7a6a]">{colorResult.primaryColor}</p>
               </div>
             </div>
@@ -83,7 +88,7 @@ export function ColorResultStep({ jewelry, colorResult, onConfirm, onRegenerate,
                 style={{ backgroundColor: colorResult.secondaryColor }}
               />
               <div>
-                <p className="text-sm font-medium text-[#3a3028]">辅色调</p>
+                <p className="text-sm font-medium text-[#3a3028]">{t.customization.colorResultStep.secondaryColor}</p>
                 <p className="text-xs text-[#8a7a6a]">{colorResult.secondaryColor}</p>
               </div>
             </div>
@@ -94,7 +99,7 @@ export function ColorResultStep({ jewelry, colorResult, onConfirm, onRegenerate,
                 style={{ backgroundColor: colorResult.accentColor }}
               />
               <div>
-                <p className="text-sm font-medium text-[#3a3028]">点缀色</p>
+                <p className="text-sm font-medium text-[#3a3028]">{t.customization.colorResultStep.accentColor}</p>
                 <p className="text-xs text-[#8a7a6a]">{colorResult.accentColor}</p>
               </div>
             </div>
@@ -105,7 +110,7 @@ export function ColorResultStep({ jewelry, colorResult, onConfirm, onRegenerate,
                 style={{ backgroundColor: colorResult.goldTone }}
               />
               <div>
-                <p className="text-sm font-medium text-[#3a3028]">金丝色</p>
+                <p className="text-sm font-medium text-[#3a3028]">{t.customization.colorResultStep.goldTone}</p>
                 <p className="text-xs text-[#8a7a6a]">{colorResult.goldTone}</p>
               </div>
             </div>
@@ -124,7 +129,7 @@ export function ColorResultStep({ jewelry, colorResult, onConfirm, onRegenerate,
           className="border-[#c9a96e] text-[#c9a96e] hover:bg-[#c9a96e]/5 h-12 bg-transparent"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          返回
+          {t.customization.colorResultStep.back}
         </Button>
         <Button
           variant="outline"
@@ -132,11 +137,11 @@ export function ColorResultStep({ jewelry, colorResult, onConfirm, onRegenerate,
           className="border-[#c9a96e] text-[#c9a96e] hover:bg-[#c9a96e]/5 h-12 bg-transparent"
         >
           <RefreshCw className="w-4 h-4 mr-2" />
-          重新生成
+          {t.customization.colorResultStep.regenerate}
         </Button>
         <Button onClick={onConfirm} className="flex-1 bg-[#c9a96e] text-white hover:bg-[#b8986d] h-12">
           <Check className="w-4 h-4 mr-2" />
-          确认配色，选择配饰
+          {t.customization.colorResultStep.confirm}
         </Button>
       </div>
     </div>
