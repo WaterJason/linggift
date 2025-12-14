@@ -2,7 +2,6 @@ import { Header } from "@/components/header"
 import { Hero } from "@/components/hero"
 import { HowItWorks } from "@/components/how-it-works"
 import { JewelryCollection } from "@/components/jewelry-collection"
-import { ColorCustomizer } from "@/components/color-customizer"
 import { CraftProcess } from "@/components/craft-process"
 import { ReviewsSection } from "@/components/reviews-section"
 import { Footer } from "@/components/footer"
@@ -14,7 +13,6 @@ export default function Home() {
       <Hero />
       <HowItWorks />
       <JewelryCollection />
-      <ColorCustomizer />
       <CraftProcess />
       <ReviewsSection />
       <Footer />

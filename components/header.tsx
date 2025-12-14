@@ -1,13 +1,49 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Menu, X, User } from "lucide-react"
+import { Menu, X, User, LogOut, Package } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { createClient } from "@/lib/supabase/client"
+import type { User as SupabaseUser } from "@supabase/supabase-js"
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [user, setUser] = useState<SupabaseUser | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const supabase = createClient()
+
+    // Get initial user
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user)
+      setLoading(false)
+    })
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const handleSignOut = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    window.location.href = "/"
+  }
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[#c9a96e]/20">
@@ -44,10 +80,48 @@ export function Header() {
 
           {/* Right Side Actions */}
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="text-[#5a4a3a] hover:text-[#c9a96e]">
-              <User className="h-5 w-5" />
+            {loading ? (
+              <div className="w-9 h-9 rounded-full bg-[#f5f3ef] animate-pulse" />
+            ) : user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="text-[#5a4a3a] hover:text-[#c9a96e]">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <div className="px-2 py-1.5">
+                    <p className="text-sm font-medium text-[#3a3028] truncate">
+                      {user.user_metadata?.name || user.email}
+                    </p>
+                    <p className="text-xs text-[#8a7a6a] truncate">{user.email}</p>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/orders" className="flex items-center cursor-pointer">
+                      <Package className="w-4 h-4 mr-2" />
+                      我的订单
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="text-red-600 cursor-pointer">
+                    <LogOut className="w-4 h-4 mr-2" />
+                    退出登录
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button asChild variant="ghost" size="icon" className="text-[#5a4a3a] hover:text-[#c9a96e]">
+                <Link href="/auth/login">
+                  <User className="h-5 w-5" />
+                </Link>
+              </Button>
+            )}
+            {/* </CHANGE> */}
+
+            <Button asChild className="bg-[#c9a96e] text-white hover:bg-[#b8986d] text-sm font-medium">
+              <Link href="#collection">开始定制</Link>
             </Button>
-            <Button className="bg-[#c9a96e] text-white hover:bg-[#b8986d] text-sm font-medium">开始定制</Button>
 
             {/* Mobile Menu Button */}
             <Button
@@ -77,6 +151,24 @@ export function Header() {
               <Link href="#about" className="text-sm font-medium text-[#5a4a3a] hover:text-[#c9a96e]">
                 品牌故事
               </Link>
+              {user ? (
+                <>
+                  <Link href="/orders" className="text-sm font-medium text-[#5a4a3a] hover:text-[#c9a96e]">
+                    我的订单
+                  </Link>
+                  <button
+                    onClick={handleSignOut}
+                    className="text-sm font-medium text-red-600 hover:text-red-700 text-left"
+                  >
+                    退出登录
+                  </button>
+                </>
+              ) : (
+                <Link href="/auth/login" className="text-sm font-medium text-[#c9a96e]">
+                  登录 / 注册
+                </Link>
+              )}
+              {/* </CHANGE> */}
             </div>
           </nav>
         )}
