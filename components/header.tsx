@@ -12,6 +12,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { LanguageSwitcher } from "@/components/language-switcher"
+import { useI18n } from "@/lib/i18n/context"
 import { createClient } from "@/lib/supabase/client"
 import type { User as SupabaseUser } from "@supabase/supabase-js"
 
@@ -19,6 +21,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [user, setUser] = useState<SupabaseUser | null>(null)
   const [loading, setLoading] = useState(true)
+  const { t } = useI18n()
 
   useEffect(() => {
     const supabase = createClient()
@@ -62,24 +65,28 @@ export function Header() {
               href="#collection"
               className="text-sm font-medium text-[#5a4a3a] hover:text-[#c9a96e] transition-colors"
             >
-              首饰系列
+              {t.header.jewelryCollection}
             </Link>
             <Link
               href="#customize"
               className="text-sm font-medium text-[#5a4a3a] hover:text-[#c9a96e] transition-colors"
             >
-              配色定制
+              {t.header.colorCustomization}
             </Link>
             <Link href="#craft" className="text-sm font-medium text-[#5a4a3a] hover:text-[#c9a96e] transition-colors">
-              匠心工艺
+              {t.header.craftsmanship}
             </Link>
             <Link href="#about" className="text-sm font-medium text-[#5a4a3a] hover:text-[#c9a96e] transition-colors">
-              品牌故事
+              {t.header.brandStory}
             </Link>
           </nav>
+          {/* </CHANGE> */}
 
           {/* Right Side Actions */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+            {/* </CHANGE> */}
+
             {loading ? (
               <div className="w-9 h-9 rounded-full bg-[#f5f3ef] animate-pulse" />
             ) : user ? (
@@ -100,13 +107,13 @@ export function Header() {
                   <DropdownMenuItem asChild>
                     <Link href="/orders" className="flex items-center cursor-pointer">
                       <Package className="w-4 h-4 mr-2" />
-                      我的订单
+                      {t.header.myOrders}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut} className="text-red-600 cursor-pointer">
                     <LogOut className="w-4 h-4 mr-2" />
-                    退出登录
+                    {t.header.signOut}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -117,10 +124,9 @@ export function Header() {
                 </Link>
               </Button>
             )}
-            {/* </CHANGE> */}
 
             <Button asChild className="bg-[#c9a96e] text-white hover:bg-[#b8986d] text-sm font-medium">
-              <Link href="#collection">开始定制</Link>
+              <Link href="#collection">{t.header.startCustomization}</Link>
             </Button>
 
             {/* Mobile Menu Button */}
@@ -140,35 +146,34 @@ export function Header() {
           <nav className="md:hidden py-4 border-t border-[#c9a96e]/20">
             <div className="flex flex-col gap-4">
               <Link href="#collection" className="text-sm font-medium text-[#5a4a3a] hover:text-[#c9a96e]">
-                首饰系列
+                {t.header.jewelryCollection}
               </Link>
               <Link href="#customize" className="text-sm font-medium text-[#5a4a3a] hover:text-[#c9a96e]">
-                配色定制
+                {t.header.colorCustomization}
               </Link>
               <Link href="#craft" className="text-sm font-medium text-[#5a4a3a] hover:text-[#c9a96e]">
-                匠心工艺
+                {t.header.craftsmanship}
               </Link>
               <Link href="#about" className="text-sm font-medium text-[#5a4a3a] hover:text-[#c9a96e]">
-                品牌故事
+                {t.header.brandStory}
               </Link>
               {user ? (
                 <>
                   <Link href="/orders" className="text-sm font-medium text-[#5a4a3a] hover:text-[#c9a96e]">
-                    我的订单
+                    {t.header.myOrders}
                   </Link>
                   <button
                     onClick={handleSignOut}
                     className="text-sm font-medium text-red-600 hover:text-red-700 text-left"
                   >
-                    退出登录
+                    {t.header.signOut}
                   </button>
                 </>
               ) : (
                 <Link href="/auth/login" className="text-sm font-medium text-[#c9a96e]">
-                  登录 / 注册
+                  {t.header.loginRegister}
                 </Link>
               )}
-              {/* </CHANGE> */}
             </div>
           </nav>
         )}

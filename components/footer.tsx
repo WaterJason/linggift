@@ -1,8 +1,13 @@
+"use client"
+
 import Link from "next/link"
 import Image from "next/image"
 import { Shield, Phone, Mail, MapPin } from "lucide-react"
+import { useI18n } from "@/lib/i18n/context"
 
 export function Footer() {
+  const { t } = useI18n()
+
   return (
     <footer className="bg-[#3a3028] text-white py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -22,36 +27,33 @@ export function Footer() {
                 <span className="text-[10px] text-white/50 tracking-widest">LINGHUA CLOISONNE</span>
               </div>
             </div>
-            <p className="text-white/60 text-sm leading-relaxed mb-4 max-w-md">
-              聆花珐琅，专注于珐琅首饰的设计与定制。我们传承千年珐琅工艺，融合现代美学，为您打造独一无二的珐琅艺术品。
-            </p>
-            <p className="text-white/60 text-sm leading-relaxed max-w-md">
-              每一件作品都可定制专属配色，让您的首饰与众不同。
-            </p>
+            <p className="text-white/60 text-sm leading-relaxed mb-4 max-w-md">{t.footer.brandDescription}</p>
+            <p className="text-white/60 text-sm leading-relaxed max-w-md">{t.footer.brandDescription2}</p>
+            {/* </CHANGE> */}
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-medium mb-4 text-white/80">快速链接</h3>
+            <h3 className="font-medium mb-4 text-white/80">{t.footer.quickLinks}</h3>
             <ul className="space-y-3">
               <li>
                 <Link href="#collection" className="text-white/60 hover:text-white text-sm transition-colors">
-                  首饰系列
+                  {t.header.jewelryCollection}
                 </Link>
               </li>
               <li>
                 <Link href="#customize" className="text-white/60 hover:text-white text-sm transition-colors">
-                  配色定制
+                  {t.header.colorCustomization}
                 </Link>
               </li>
               <li>
                 <Link href="#craft" className="text-white/60 hover:text-white text-sm transition-colors">
-                  匠心工艺
+                  {t.header.craftsmanship}
                 </Link>
               </li>
               <li>
                 <Link href="#about" className="text-white/60 hover:text-white text-sm transition-colors">
-                  品牌故事
+                  {t.header.brandStory}
                 </Link>
               </li>
             </ul>
@@ -59,7 +61,7 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="font-medium mb-4 text-white/80">联系我们</h3>
+            <h3 className="font-medium mb-4 text-white/80">{t.footer.contactUs}</h3>
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-white/60 text-sm">
                 <Phone className="h-4 w-4" />
@@ -71,7 +73,7 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-2 text-white/60 text-sm">
                 <MapPin className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                <span>北京市朝阳区艺术区</span>
+                <span>{t.footer.address}</span>
               </li>
             </ul>
           </div>
@@ -82,10 +84,8 @@ export function Footer() {
           <div className="flex items-start gap-3">
             <Shield className="h-5 w-5 text-[#c9a96e] flex-shrink-0 mt-0.5" />
             <div>
-              <h4 className="font-medium text-sm mb-1 text-white/90">品质保障</h4>
-              <p className="text-white/60 text-sm">
-                所有作品均提供品质保证，如有任何质量问题，我们承诺免费维修或更换。
-              </p>
+              <h4 className="font-medium text-sm mb-1 text-white/90">{t.footer.qualityGuarantee}</h4>
+              <p className="text-white/60 text-sm">{t.footer.qualityDescription}</p>
             </div>
           </div>
         </div>
@@ -95,10 +95,10 @@ export function Footer() {
           <p className="text-white/40 text-sm">©2025 聆花珐琅 LINGHUA CLOISONNE</p>
           <div className="flex gap-6">
             <Link href="#" className="text-white/40 hover:text-white text-sm transition-colors">
-              隐私政策
+              {t.footer.privacyPolicy}
             </Link>
             <Link href="#" className="text-white/40 hover:text-white text-sm transition-colors">
-              服务条款
+              {t.footer.termsOfService}
             </Link>
           </div>
         </div>
