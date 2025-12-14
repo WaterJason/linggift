@@ -1,6 +1,91 @@
 export type Locale = "zh" | "en"
 
-export const translations = {
+interface StepItem {
+  title: string
+  description: string
+}
+
+interface ReviewItem {
+  quote: string
+  customer: string
+  product: string
+}
+
+export interface Translations {
+  header: {
+    jewelryCollection: string
+    colorCustomization: string
+    craftsmanship: string
+    brandStory: string
+    startCustomization: string
+    myOrders: string
+    signOut: string
+    loginRegister: string
+  }
+  hero: {
+    title: string
+    subtitle: string
+    description: string
+    startCustomization: string
+    browseCollection: string
+    colorOptions: string
+    colorOptionsLabel: string
+    handmade: string
+    handmadeLabel: string
+    exclusive: string
+    exclusiveLabel: string
+  }
+  howItWorks: {
+    title: string
+    subtitle: string
+    steps: StepItem[]
+  }
+  collection: {
+    title: string
+    subtitle: string
+    categories: {
+      all: string
+      earrings: string
+      necklace: string
+      bracelet: string
+      brooch: string
+      ring: string
+    }
+    colorOptions: string
+    aiCustomize: string
+  }
+  craft: {
+    title: string
+    subtitle: string
+    innovation: string
+    innovationBadge: string
+    steps: StepItem[]
+    brandStory: {
+      title: string
+      p1: string
+      p2: string
+      p3: string
+    }
+  }
+  reviews: {
+    title: string
+    subtitle: string
+    items: ReviewItem[]
+  }
+  footer: {
+    brandDescription: string
+    brandDescription2: string
+    quickLinks: string
+    contactUs: string
+    qualityGuarantee: string
+    qualityDescription: string
+    privacyPolicy: string
+    termsOfService: string
+    address: string
+  }
+}
+
+export const translations: Record<Locale, Translations> = {
   zh: {
     // Header
     header: {
@@ -299,6 +384,4 @@ export const translations = {
       address: "Art District, Chaoyang, Beijing",
     },
   },
-} as const
-
-export type Translations = typeof translations.zh
+}
